@@ -79,6 +79,8 @@ public class UIManager : MonoBehaviour
     
     public void UpdateSourceList(List<SourceInfo> sources)
     {
+        if (sourceListParent == null || sourceListItemPrefab == null) return;
+        
         // Очистить список
         foreach (Transform child in sourceListParent)
         {
@@ -89,7 +91,13 @@ public class UIManager : MonoBehaviour
         foreach (SourceInfo source in sources)
         {
             GameObject item = Instantiate(sourceListItemPrefab, sourceListParent);
-            TextMeshProUGUI text = item.GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI text = item.GetComponentInChildren<TextMeshProUGUI>(true);
+            
+            if (text == null)
+            {
+                Debug.LogWarning("SourceListItemPrefab не содержит TextMeshProUGUI");
+                continue;
+            }
             
             string status = source.visited ? "✓" : (source.reachable ? "○" : "✗");
             text.text = $"{status} {source.node.name}: u={source.usefulness:F2} d={source.reliability:F2}";

@@ -8,8 +8,8 @@ public class NodeVisual : MonoBehaviour
     
     [Header("Визуальные элементы")]
     public Renderer nodeRenderer;
-    public TextMeshProUGUI nameLabel;
-    public TextMeshProUGUI valueLabel;
+    public TextMeshPro nameLabel;      // 3D-подпись (не требует Canvas)
+    public TextMeshPro valueLabel;
     public GameObject sourceIndicator;
     
     [Header("Цвета")]

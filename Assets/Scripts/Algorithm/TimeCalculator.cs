@@ -14,7 +14,13 @@ public class TimeCalculator : MonoBehaviour
     
     void Start()
     {
-        remainingTime = cityGraph.availableTime;
+        ResetTime();
+    }
+    
+    public void ResetTime()
+    {
+        currentTime = 0;
+        remainingTime = cityGraph != null ? cityGraph.availableTime : remainingTime;
     }
     
     public float CalculateWorkability()

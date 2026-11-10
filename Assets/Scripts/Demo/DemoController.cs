@@ -25,6 +25,7 @@ public class DemoController : MonoBehaviour
     private GameObject playerObject;
     private GraphNode currentNode;
     private List<GraphNode> visitedPath = new List<GraphNode>();
+    private List<GameObject> spawnedVisuals = new List<GameObject>();
     private float currentAlpha = 0;
     
     void Start()
@@ -34,6 +35,17 @@ public class DemoController : MonoBehaviour
     
     void InitializeDemo()
     {
+        // Убрать визуализацию прошлого графа (при повторной генерации)
+        foreach (GameObject visual in spawnedVisuals)
+        {
+            if (visual != null) Destroy(visual);
+        }
+        spawnedVisuals.Clear();
+        
+        if (playerObject != null) Destroy(playerObject);
+        playerObject = null;
+        currentNode = null;
+        
         // Создать игрока
         if (playerPrefab != null && cityGraph.playerStartNode != null)
         {
@@ -59,16 +71,19 @@ public class DemoController : MonoBehaviour
             
             SourceInfo source = cityGraph.sources.FirstOrDefault(s => s.node == node);
             nodeVisual.Initialize(node, source);
+            
+            spawnedVisuals.Add(nodeObj);
         }
         
         // Создать визуальные рёбра
         foreach (GraphEdge edge in cityGraph.edges)
         {
-            CreateEdgeVisual(edge);
+            GameObject edgeObj = CreateEdgeVisual(edge);
+            if (edgeObj != null) spawnedVisuals.Add(edgeObj);
         }
     }
     
-    void CreateEdgeVisual(GraphEdge edge)
+    GameObject CreateEdgeVisual(GraphEdge edge)
     {
         GameObject edgeObj = Instantiate(edgePrefab);
         LineRenderer lineRenderer = edgeObj.GetComponent<LineRenderer>();
@@ -90,11 +105,14 @@ public class DemoController : MonoBehaviour
             lineRenderer.startColor = color;
             lineRenderer.endColor = color;
         }
+        
+        return edgeObj;
     }
     
     public void OnGenerateClicked()
     {
         cityGraph.GenerateGraph();
+        if (timeCalculator != null) timeCalculator.ResetTime();
         InitializeDemo();
         uiManager.UpdateStatus("Граф сгенерирован");
     }

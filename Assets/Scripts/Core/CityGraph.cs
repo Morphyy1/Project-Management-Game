@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[UnityEngine.DefaultExecutionOrder(-100)] // гарантия: GenerateGraph() в Start() выполнится раньше DemoController.Start()
 public class CityGraph : MonoBehaviour
 {
     public List<GraphNode> nodes = new List<GraphNode>();
